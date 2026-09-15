@@ -41,6 +41,7 @@ MovieVerse is a movie discovery web application built with React.js and Node.js.
 
 ## 📂 Project Structure
 
+```text
 MovieVerse/
 │
 ├── backend/
@@ -60,6 +61,7 @@ MovieVerse/
 │   └── vite.config.js
 │
 └── README.md
+```
 
 ## ⚙️ Installation
 
