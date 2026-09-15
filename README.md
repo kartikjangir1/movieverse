@@ -1,30 +1,158 @@
-# MovieVerse
+# 🎬 MovieVerse
 
-A React and Express application that uses TMDB to search movies and TV shows and display ratings, genres, cast, release dates, trailers, and more.
+MovieVerse is a movie discovery web application where users can explore movies, search for movies, view detailed information, and discover trending movies and TV shows.
 
-## Tech Stack
+## ✨ Features
 
+- 🔎 Search movies
+- 🎬 Browse movies
+- 🔥 Trending movies
+- 📺 TV shows
+- 🎞️ Movie details
+- ⭐ Ratings
+- 📅 Release dates
+- 🎭 Genres
+- 👥 Cast information
+- 🎥 Movie trailers
+- 🔄 Similar movies
+- 📱 Responsive design
+
+## 🛠️ Tech Stack
+
+### Frontend
 - React.js
+- Vite
+- JavaScript
+- Tailwind CSS
+- HTML5
+- CSS
+
+### Backend
 - Node.js
 - Express.js
-- Vite
+- REST API
 - TMDB API
 
-## Features
+### Deployment & Tools
+- Git
+- GitHub
+- Render
+- Vercel
 
-- Search Movies
-- Movie Details
-- Responsive Design
-- REST API Integration
+## 📂 Project Structure
 
-## Trailer setup
+```text
+MovieVerse/
+│
+├── backend/
+│   ├── routes/
+│   │   └── movies.js
+│   ├── server.js
+│   ├── package.json
+│   └── .env
+│
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── App.jsx
+│   │   ├── api.js
+│   │   └── main.jsx
+│   ├── package.json
+│   └── vite.config.js
+│
+└── README.md
 
-For a separately deployed Render frontend, set the frontend environment variable `VITE_API_URL` to the deployed backend URL, for example `https://your-backend.onrender.com`. Leave it unset when the backend serves `frontend/dist` from the same service.
+⚙️ Installation
+1. Clone the Repository
+git clone https://github.com/kartikjangir1/movieverse.git
+cd movieverse
+2. Install Backend Dependencies
+cd backend
+npm install
+3. Add Environment Variable
 
-For Netflix's official YouTube channel trailers, add a YouTube Data API v3 key to `backend/.env`:
+Create a .env file inside the backend folder:
 
-```env
-YOUTUBE_API_KEY=your_youtube_data_api_key
-```
+TMDB_API_KEY=your_tmdb_api_key
+4. Start Backend
+npm start
 
-The backend searches only the Netflix channel and embeds the result inside the MovieVerse card. If the key is missing or no Netflix trailer matches, it falls back to an official TMDB trailer. The app never redirects to YouTube.
+Backend will run on:
+
+http://localhost:5000
+5. Install Frontend Dependencies
+
+Open a new terminal:
+
+cd frontend
+npm install
+6. Start Frontend
+npm run dev
+
+Frontend will run on:
+
+http://localhost:5173
+🔑 Environment Variables
+
+The project uses the TMDB API for movie and TV show data.
+
+Backend .env:
+
+TMDB_API_KEY=your_tmdb_api_key
+
+Note: Never upload your .env file or expose your API key on GitHub.
+
+🌐 API Endpoints
+GET /api/movies
+GET /api/movies/:id
+GET /api/search
+GET /api/trending
+GET /api/tvshows
+GET /api/tvshows/:id
+🎬 Movie Details
+
+MovieVerse provides information such as:
+
+Movie title
+Poster
+Overview
+Rating
+Genres
+Release date
+Runtime
+Language
+Cast
+Trailer
+Similar movies
+📱 Responsive Design
+
+MovieVerse is designed to work on:
+
+💻 Desktop
+💻 Laptop
+📱 Tablet
+📱 Mobile
+🚀 Deployment
+
+The backend can be deployed on Render and the frontend can be deployed on Vercel.
+
+For separate frontend and backend deployment, add the backend URL to the frontend environment variables:
+
+VITE_API_URL=https://your-backend-url.onrender.com
+🔮 Future Improvements
+User authentication
+Watchlist
+Favorites
+Movie reviews
+Personalized recommendations
+Advanced filters
+👨‍💻 Author
+
+Kartik Jangir
+
+B.Tech Computer Science Engineering
+
+⭐ Support
+
+If you like this project, consider giving it a ⭐ on GitHub.
