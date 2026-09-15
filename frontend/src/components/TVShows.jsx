@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
+import WatchPanel from './WatchPanel'
 
-export default function TVShows({ items }) {
+export default function TVShows({ items, loading }) {
   const sliderRef = useRef(null)
   const [selectedShow, setSelectedShow] = useState(null)
   const [showDetail, setShowDetail] = useState(null)
@@ -20,7 +21,7 @@ export default function TVShows({ items }) {
     setLoadingDetail(true)
 
     try {
-      const response = await fetch(`/api/movies/${item.id}`)
+      const response = await fetch(`/api/tvshows/${item.id}`)
       if (!response.ok) {
         throw new Error('Unable to load show details')
       }
@@ -39,6 +40,8 @@ export default function TVShows({ items }) {
     setDetailError('')
   }
 
+  const openSimilarShow = (show) => openShow(show)
+
   return (
     <section id="tvshows" className="trending">
       <div className="section-header trending-header">
@@ -49,7 +52,9 @@ export default function TVShows({ items }) {
         </div>
       </div>
       <div className="trending-grid" ref={sliderRef}>
-        {items && items.length > 0 ? (
+        {loading ? (
+          <div className="trending-empty">Loading TV shows...</div>
+        ) : items && items.length > 0 ? (
           items.map((item, index) => (
             <div className="trending-card" key={index} onClick={() => openShow(item)}>
               <div className="trending-img">
@@ -94,12 +99,26 @@ export default function TVShows({ items }) {
                   </div>
                   <div className="detail-cast">
                     <h4>Cast</h4>
-                    <p>{showDetail.cast?.length ? showDetail.cast.join(', ') : 'N/A'}</p>
+                    {showDetail.cast?.length ? (
+                      <div className="cast-list">
+                        {showDetail.cast.map((member) => <span key={member}>{member}</span>)}
+                      </div>
+                    ) : <p>N/A</p>}
                   </div>
-                  {showDetail.officialSite && (
-                    <p className="detail-link">
-                      <a href={showDetail.officialSite} target="_blank" rel="noreferrer">View official page</a>
-                    </p>
+                  <WatchPanel title={showDetail.title} trailer={showDetail.trailer} mediaLabel="official trailer" />
+                  {showDetail.similar?.length > 0 && (
+                    <div className="similar-section">
+                      <h4>More like this</h4>
+                      <div className="similar-grid">
+                        {showDetail.similar.map((similarShow) => (
+                          <button type="button" className="similar-card" key={similarShow.id} onClick={() => openSimilarShow(similarShow)}>
+                            <img src={similarShow.image} alt={similarShow.title} />
+                            <strong>{similarShow.title}</strong>
+                            <span>{similarShow.info}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>

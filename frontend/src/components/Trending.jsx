@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
+import WatchPanel from './WatchPanel'
 
-export default function Trending({items}){
+export default function Trending({ items, loading }){
   const sliderRef = useRef(null)
   const [selectedItem, setSelectedItem] = useState(null)
   const [itemDetail, setItemDetail] = useState(null)
@@ -39,6 +40,8 @@ export default function Trending({items}){
     setDetailError('')
   }
 
+  const openSimilarItem = (item) => openItem(item)
+
   return (
     <section id="coming" className="trending">
       <div className="section-header trending-header">
@@ -49,7 +52,9 @@ export default function Trending({items}){
         </div>
       </div>
       <div className="trending-grid" ref={sliderRef}>
-        {items && items.length > 0 ? (
+        {loading ? (
+          <div className="trending-empty">Loading trending movies...</div>
+        ) : items && items.length > 0 ? (
           items.map((item, index) => (
             <div className="trending-card" key={index} onClick={() => openItem(item)}>
               <div className="trending-img">
@@ -94,12 +99,26 @@ export default function Trending({items}){
                   </div>
                   <div className="detail-cast">
                     <h4>Cast</h4>
-                    <p>{itemDetail.cast?.length ? itemDetail.cast.join(', ') : 'N/A'}</p>
+                    {itemDetail.cast?.length ? (
+                      <div className="cast-list">
+                        {itemDetail.cast.map((member) => <span key={member}>{member}</span>)}
+                      </div>
+                    ) : <p>N/A</p>}
                   </div>
-                  {itemDetail.officialSite && (
-                    <p className="detail-link">
-                      <a href={itemDetail.officialSite} target="_blank" rel="noreferrer">View official page</a>
-                    </p>
+                  <WatchPanel title={itemDetail.title} trailer={itemDetail.trailer} mediaLabel="official trailer" />
+                  {itemDetail.similar?.length > 0 && (
+                    <div className="similar-section">
+                      <h4>More like this</h4>
+                      <div className="similar-grid">
+                        {itemDetail.similar.map((similarItem) => (
+                          <button type="button" className="similar-card" key={similarItem.id} onClick={() => openSimilarItem(similarItem)}>
+                            <img src={similarItem.image} alt={similarItem.title} />
+                            <strong>{similarItem.title}</strong>
+                            <span>{similarItem.info}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>

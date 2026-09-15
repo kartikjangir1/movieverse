@@ -1,32 +1,24 @@
 import React from 'react'
 
-const heroData = {
-  image: '/assets/justice.jpg',
-  heading: 'Featured Movie',
-  titleLines: ['Justice League', 'Far from Home'],
-}
+export default function Home({ featuredMovie }) {
+  const heroImage = featuredMovie?.image || '/assets/justice.jpg'
+  const heroTitle = featuredMovie?.title || 'Featured Movie'
 
-export default function Home(){
   return (
     <section
       id="home"
       className="hero"
       style={{
-        backgroundImage: `url('${heroData.image}')`,
+        backgroundImage: `url('${heroImage}')`,
         backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat',
+        height: 'clamp(380px, 52vw, 620px)',
       }}
     >
       <div className="hero-inner">
-        <h2>{heroData.heading}</h2>
-        <h1>
-          {heroData.titleLines.map((line, index) => (
-            <React.Fragment key={index}>
-              {line}
-              {index < heroData.titleLines.length - 1 && <br />}
-            </React.Fragment>
-          ))}
-        </h1>
+        <h2>Recently Released</h2>
+        <h1>{heroTitle}</h1>
         <div className="hero-actions">
           <button className="btn" aria-label="Play trailer">
             <i className="bx bx-play"></i>

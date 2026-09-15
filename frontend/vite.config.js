@@ -4,7 +4,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://movieverse-i0l6.onrender.com',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
       },

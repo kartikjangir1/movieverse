@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Header from './components/Header'
 import Home from './components/Home'
 import Movies from './components/Movies'
@@ -11,32 +11,44 @@ export default function App(){
   const [movies, setMovies] = useState([])
   const [trending, setTrending] = useState([])
   const [tvShows, setTVShows] = useState([])
+  const [moviesLoading, setMoviesLoading] = useState(true)
+  const [trendingLoading, setTrendingLoading] = useState(true)
+  const [tvShowsLoading, setTVShowsLoading] = useState(true)
 
   useEffect(() => {
     fetch('/api/movies')
       .then((res) => res.json())
-      .then(setMovies)
+      .then((data) => setMovies(Array.isArray(data) ? data : []))
       .catch(() => setMovies([]))
+      .finally(() => setMoviesLoading(false))
 
     fetch('/api/trending')
       .then((res) => res.json())
-      .then(setTrending)
+      .then((data) => setTrending(Array.isArray(data) ? data : []))
       .catch(() => setTrending([]))
+      .finally(() => setTrendingLoading(false))
 
     fetch('/api/tvshows')
       .then((res) => res.json())
-      .then(setTVShows)
+      .then((data) => setTVShows(Array.isArray(data) ? data : []))
       .catch(() => setTVShows([]))
+      .finally(() => setTVShowsLoading(false))
   }, [])
+
+  const featuredMovie = useMemo(() => {
+    const pool = [...trending, ...movies].filter(Boolean)
+    if (!pool.length) return null
+    return pool[Math.floor(Math.random() * pool.length)]
+  }, [movies, trending])
 
   return (
     <div>
-      <Header />
+      <Header movies={movies} trending={trending} tvShows={tvShows} />
       <main>
-        <Home />
-        <Trending items={trending} />
-        <Movies movies={movies} /> 
-        <TVShows items={tvShows} />
+        <Home featuredMovie={featuredMovie} />
+        <Trending items={trending} loading={trendingLoading} />
+        <Movies movies={movies} loading={moviesLoading} />
+        <TVShows items={tvShows} loading={tvShowsLoading} />
         <Contact />
       </main>
       <Footer />

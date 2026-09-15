@@ -1,6 +1,63 @@
 import React, { useState, useEffect } from 'react'
+import WatchPanel from './WatchPanel'
 
-export default function Header(){
+const normalizeText = (value = '') => String(value)
+  .toLowerCase()
+  .replace(/[^a-z0-9\s]/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim()
+
+const scoreSearchMatch = (itemTitle = '', query = '') => {
+  const title = normalizeText(itemTitle)
+  const searchTerms = normalizeText(query).split(' ').filter(Boolean)
+
+  if (!title || !searchTerms.length) return 0
+  if (title === query) return 1000
+
+  let score = 0
+  const titleWords = title.split(' ')
+
+  for (const term of searchTerms) {
+    if (title.includes(term)) score += 40
+    if (titleWords.includes(term)) score += 20
+  }
+
+  if (title.startsWith(searchTerms[0])) score += 25
+  return score
+}
+
+const getMediaType = (item, movieList = [], tvList = []) => {
+  if (item?.mediaType) return item.mediaType
+  if (item?.type) return item.type
+  if (item?.first_air_date || item?.name || item?.network || item?.schedule) {
+    return 'tv'
+  }
+  if (movieList.some((movie) => String(movie.id) === String(item?.id))) return 'movie'
+  if (tvList.some((show) => String(show.id) === String(item?.id))) return 'tv'
+  return 'movie'
+}
+
+const getLocalSearchResults = (query, movies = [], trending = [], tvShows = []) => {
+  const searchText = normalizeText(query)
+  if (!searchText) return { movies: [], trending: [] }
+
+  const allMatches = [...movies, ...trending, ...tvShows]
+    .map((item) => ({
+      ...item,
+      mediaType: getMediaType(item, movies, tvShows),
+      _score: scoreSearchMatch(item.title || item.name || '', searchText),
+    }))
+    .filter((item) => item._score > 0)
+    .sort((a, b) => b._score - a._score)
+    .slice(0, 8)
+
+  return {
+    movies: allMatches.filter((item) => getMediaType(item, movies, tvShows) === 'movie').slice(0, 4),
+    trending: allMatches.filter((item) => getMediaType(item, movies, tvShows) === 'tv').slice(0, 4),
+  }
+}
+
+export default function Header({ movies = [], trending = [], tvShows = [] }){
   const [open, setOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
@@ -25,17 +82,40 @@ export default function Header(){
   }
 
   const openSearchDetail = async (item) => {
+    const mediaType = getMediaType(item, movies, tvShows)
     setSelectedItem(item)
     setItemDetail(null)
     setDetailError('')
     setLoadingDetail(true)
 
     try {
-      const response = await fetch(`/api/movies/${item.id}`)
-      if (!response.ok) {
+      const candidates = []
+      if (mediaType === 'tv' || item?.first_air_date || item?.name || item?.network || item?.schedule) {
+        candidates.push(`/api/tvshows/${item.id}`)
+      }
+      if (mediaType === 'movie' || item?.release_date || item?.premiered || !candidates.length) {
+        candidates.push(`/api/movies/${item.id}`)
+      }
+      if (!candidates.length) {
+        candidates.push(`/api/tvshows/${item.id}`, `/api/movies/${item.id}`)
+      }
+
+      let detail = null
+      for (const endpoint of candidates) {
+        const response = await fetch(endpoint)
+        if (response.ok) {
+          detail = await response.json()
+          break
+        }
+        if (response.status !== 404) {
+          throw new Error('Unable to load details')
+        }
+      }
+
+      if (!detail) {
         throw new Error('Unable to load details')
       }
-      const detail = await response.json()
+
       setItemDetail(detail)
     } catch (err) {
       setDetailError('Could not load details. Please try again.')
@@ -50,12 +130,17 @@ export default function Header(){
     setDetailError('')
   }
 
+  const openSimilarMovie = (movie) => openSearchDetail({ ...movie, mediaType: getMediaType(movie, movies, tvShows) })
+
   useEffect(() => {
     if (!searchOpen || !query.trim()) {
       setResults({ movies: [], trending: [] })
       setLoading(false)
       return
     }
+
+    const localResults = getLocalSearchResults(query, movies, trending, tvShows)
+    setResults(localResults)
 
     const controller = new AbortController()
     const timeout = setTimeout(() => {
@@ -67,22 +152,33 @@ export default function Header(){
           return res.json()
         })
         .then((data) => {
-          setResults({ movies: data.movies || [], trending: data.trending || [] })
+          const remoteResults = {
+            movies: Array.isArray(data.movies) ? data.movies : [],
+            trending: Array.isArray(data.trending) ? data.trending : [],
+          }
+
+          const mergedResults = {
+            movies: remoteResults.movies.length ? remoteResults.movies : localResults.movies,
+            trending: remoteResults.trending.length ? remoteResults.trending : localResults.trending,
+          }
+
+          setResults(mergedResults)
           setLoading(false)
         })
         .catch((err) => {
           if (err.name !== 'AbortError') {
             setError('Unable to fetch search results.')
+            setResults(localResults)
             setLoading(false)
           }
         })
-    }, 300)
+    }, 200)
 
     return () => {
       clearTimeout(timeout)
       controller.abort()
     }
-  }, [query, searchOpen])
+  }, [query, searchOpen, movies, trending, tvShows])
 
   return (
     <>
@@ -96,7 +192,7 @@ export default function Header(){
           <a href="#coming">Trending</a>
           <a href="#newsletter">Contact</a>
         </nav>
-        <div className="search">
+        <div className="header-actions">
           <button type="button" className="btn search-toggle" onClick={toggleSearch}>Search</button>
         </div>
       </header>
@@ -198,12 +294,26 @@ export default function Header(){
                   </div>
                   <div className="detail-cast">
                     <h4>Cast</h4>
-                    <p>{itemDetail.cast?.length ? itemDetail.cast.join(', ') : 'N/A'}</p>
+                    {itemDetail.cast?.length ? (
+                      <div className="cast-list">
+                        {itemDetail.cast.map((member) => <span key={member}>{member}</span>)}
+                      </div>
+                    ) : <p>N/A</p>}
                   </div>
-                  {itemDetail.officialSite && (
-                    <p className="detail-link">
-                      <a href={itemDetail.officialSite} target="_blank" rel="noreferrer">View official page</a>
-                    </p>
+                  <WatchPanel title={itemDetail.title} trailer={itemDetail.trailer} mediaLabel="official trailer" />
+                  {itemDetail.similar?.length > 0 && (
+                    <div className="similar-section">
+                      <h4>More like this</h4>
+                      <div className="similar-grid">
+                        {itemDetail.similar.map((similarMovie) => (
+                          <button type="button" className="similar-card" key={similarMovie.id} onClick={() => openSimilarMovie(similarMovie)}>
+                            <img src={similarMovie.image} alt={similarMovie.title} />
+                            <strong>{similarMovie.title}</strong>
+                            <span>{similarMovie.info}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>
