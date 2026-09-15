@@ -1,6 +1,6 @@
 # 🎬 MovieVerse
 
-MovieVerse is a movie discovery web application where users can explore movies, search for movies, view detailed information, and discover trending movies and TV shows.
+MovieVerse is a movie discovery web application built with React.js and Node.js. It allows users to explore movies, search for movies, view detailed movie information, and discover trending movies and TV shows.
 
 ## ✨ Features
 
@@ -9,7 +9,7 @@ MovieVerse is a movie discovery web application where users can explore movies, 
 - 🔥 Trending movies
 - 📺 TV shows
 - 🎞️ Movie details
-- ⭐ Ratings
+- ⭐ Movie ratings
 - 📅 Release dates
 - 🎭 Genres
 - 👥 Cast information
@@ -19,7 +19,7 @@ MovieVerse is a movie discovery web application where users can explore movies, 
 
 ## 🛠️ Tech Stack
 
-### Frontend
+**Frontend**
 - React.js
 - Vite
 - JavaScript
@@ -27,13 +27,13 @@ MovieVerse is a movie discovery web application where users can explore movies, 
 - HTML5
 - CSS
 
-### Backend
+**Backend**
 - Node.js
 - Express.js
 - REST API
 - TMDB API
 
-### Deployment & Tools
+**Tools & Platforms**
 - Git
 - GitHub
 - Render
@@ -41,15 +41,13 @@ MovieVerse is a movie discovery web application where users can explore movies, 
 
 ## 📂 Project Structure
 
-```text
 MovieVerse/
 │
 ├── backend/
 │   ├── routes/
 │   │   └── movies.js
 │   ├── server.js
-│   ├── package.json
-│   └── .env
+│   └── package.json
 │
 ├── frontend/
 │   ├── public/
@@ -63,96 +61,130 @@ MovieVerse/
 │
 └── README.md
 
-⚙️ Installation
-1. Clone the Repository
-git clone https://github.com/kartikjangir1/movieverse.git
-cd movieverse
-2. Install Backend Dependencies
-cd backend
-npm install
-3. Add Environment Variable
+## ⚙️ Installation
 
-Create a .env file inside the backend folder:
+### 1. Clone the Repository
 
-TMDB_API_KEY=your_tmdb_api_key
-4. Start Backend
-npm start
+    git clone https://github.com/kartikjangir1/movieverse.git
 
-Backend will run on:
+### 2. Open the Project
 
-http://localhost:5000
-5. Install Frontend Dependencies
+    cd movieverse
+
+### 3. Install Backend Dependencies
+
+    cd backend
+    npm install
+
+### 4. Configure Environment Variables
+
+Create a `.env` file inside the `backend` folder.
+
+    TMDB_API_KEY=your_tmdb_api_key
+
+Replace `your_tmdb_api_key` with your actual TMDB API key.
+
+### 5. Start the Backend
+
+    npm start
+
+The backend will run on:
+
+    http://localhost:5000
+
+### 6. Install Frontend Dependencies
 
 Open a new terminal:
 
-cd frontend
-npm install
-6. Start Frontend
-npm run dev
+    cd frontend
+    npm install
 
-Frontend will run on:
+### 7. Start the Frontend
 
-http://localhost:5173
-🔑 Environment Variables
+    npm run dev
 
-The project uses the TMDB API for movie and TV show data.
+The frontend will run on:
 
-Backend .env:
+    http://localhost:5173
 
-TMDB_API_KEY=your_tmdb_api_key
+## 🔑 Environment Variables
 
-Note: Never upload your .env file or expose your API key on GitHub.
+MovieVerse uses the TMDB API to fetch movie and TV show data.
 
-🌐 API Endpoints
-GET /api/movies
-GET /api/movies/:id
-GET /api/search
-GET /api/trending
-GET /api/tvshows
-GET /api/tvshows/:id
-🎬 Movie Details
+Create the following variable in `backend/.env`:
 
-MovieVerse provides information such as:
+    TMDB_API_KEY=your_tmdb_api_key
 
-Movie title
-Poster
-Overview
-Rating
-Genres
-Release date
-Runtime
-Language
-Cast
-Trailer
-Similar movies
-📱 Responsive Design
+**Note:** Never upload your `.env` file or expose your API key publicly on GitHub.
 
-MovieVerse is designed to work on:
+## 🌐 API Endpoints
 
-💻 Desktop
-💻 Laptop
-📱 Tablet
-📱 Mobile
-🚀 Deployment
+    GET /api/movies
+    GET /api/movies/:id
+    GET /api/search
+    GET /api/trending
+    GET /api/tvshows
+    GET /api/tvshows/:id
+
+## 🎬 Movie Details
+
+MovieVerse provides detailed information about movies, including:
+
+- Movie title
+- Poster
+- Overview
+- Rating
+- Genres
+- Release date
+- Runtime
+- Language
+- Status
+- Cast
+- Trailer
+- Similar movies
+
+## 🔥 Trending Content
+
+Users can explore trending movies and TV shows through the trending section.
+
+## 🔎 Search
+
+Users can search for movies and find relevant movie information using the search feature.
+
+## 📱 Responsive Design
+
+MovieVerse is designed to work across:
+
+- Desktop
+- Laptop
+- Tablet
+- Mobile
+
+## 🚀 Deployment
 
 The backend can be deployed on Render and the frontend can be deployed on Vercel.
 
 For separate frontend and backend deployment, add the backend URL to the frontend environment variables:
 
-VITE_API_URL=https://your-backend-url.onrender.com
-🔮 Future Improvements
-User authentication
-Watchlist
-Favorites
-Movie reviews
-Personalized recommendations
-Advanced filters
-👨‍💻 Author
+    VITE_API_URL=https://your-backend-url.onrender.com
 
-Kartik Jangir
+If the backend serves the frontend from the same service, `VITE_API_URL` is not required.
+
+## 🔮 Future Improvements
+
+- User authentication
+- Watchlist
+- Favorites
+- Movie reviews
+- Personalized recommendations
+- Advanced movie filters
+
+## 👨‍💻 Author
+
+**Kartik Jangir**
 
 B.Tech Computer Science Engineering
 
-⭐ Support
+## ⭐ Support
 
-If you like this project, consider giving it a ⭐ on GitHub.
+If you like this project, please give the repository a ⭐ on GitHub.
