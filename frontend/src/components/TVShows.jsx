@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 import WatchPanel from './WatchPanel'
+import { apiFetch } from '../api'
 
 export default function TVShows({ items, loading }) {
   const sliderRef = useRef(null)
@@ -21,7 +22,7 @@ export default function TVShows({ items, loading }) {
     setLoadingDetail(true)
 
     try {
-      const response = await fetch(`/api/tvshows/${item.id}`)
+      const response = await apiFetch(`/api/tvshows/${item.id}`)
       if (!response.ok) {
         throw new Error('Unable to load show details')
       }

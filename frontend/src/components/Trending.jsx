@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 import WatchPanel from './WatchPanel'
+import { apiFetch } from '../api'
 
 export default function Trending({ items, loading }){
   const sliderRef = useRef(null)
@@ -21,7 +22,7 @@ export default function Trending({ items, loading }){
     setLoadingDetail(true)
 
     try {
-      const response = await fetch(`/api/movies/${item.id}`)
+      const response = await apiFetch(`/api/movies/${item.id}`)
       if (!response.ok) {
         throw new Error('Unable to load details')
       }

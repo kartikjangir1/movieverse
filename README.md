@@ -19,6 +19,8 @@ A React and Express application that uses TMDB to search movies and TV shows and
 
 ## Trailer setup
 
+For a separately deployed Render frontend, set the frontend environment variable `VITE_API_URL` to the deployed backend URL, for example `https://your-backend.onrender.com`. Leave it unset when the backend serves `frontend/dist` from the same service.
+
 For Netflix's official YouTube channel trailers, add a YouTube Data API v3 key to `backend/.env`:
 
 ```env

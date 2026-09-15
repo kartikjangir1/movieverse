@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import WatchPanel from './WatchPanel'
+import { apiFetch } from '../api'
 
 const normalizeText = (value = '') => String(value)
   .toLowerCase()
@@ -102,7 +103,7 @@ export default function Header({ movies = [], trending = [], tvShows = [] }){
 
       let detail = null
       for (const endpoint of candidates) {
-        const response = await fetch(endpoint)
+        const response = await apiFetch(endpoint)
         if (response.ok) {
           detail = await response.json()
           break
@@ -146,7 +147,7 @@ export default function Header({ movies = [], trending = [], tvShows = [] }){
     const timeout = setTimeout(() => {
       setLoading(true)
       setError('')
-      fetch(`/api/search?q=${encodeURIComponent(query)}`, { signal: controller.signal })
+      apiFetch(`/api/search?q=${encodeURIComponent(query)}`, { signal: controller.signal })
         .then((res) => {
           if (!res.ok) throw new Error('Search request failed')
           return res.json()

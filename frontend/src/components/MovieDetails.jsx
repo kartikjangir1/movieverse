@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import WatchPanel from './WatchPanel'
+import { apiFetch } from '../api'
 
 export default function MovieDetails({ movie, onClose, onSelectMovie }) {
   const [movieDetail, setMovieDetail] = useState(null)
@@ -12,7 +13,7 @@ export default function MovieDetails({ movie, onClose, onSelectMovie }) {
     setDetailError('')
     setLoadingDetail(true)
 
-    fetch(`/api/movies/${movie.id}`)
+    apiFetch(`/api/movies/${movie.id}`)
       .then((response) => {
         if (!response.ok) throw new Error('Unable to load details')
         return response.json()

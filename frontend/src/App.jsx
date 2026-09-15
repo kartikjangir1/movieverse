@@ -6,6 +6,7 @@ import Trending from './components/Trending'
 import TVShows from './components/TVShows'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
+import { apiFetch } from './api'
 
 export default function App(){
   const [movies, setMovies] = useState([])
@@ -16,19 +17,19 @@ export default function App(){
   const [tvShowsLoading, setTVShowsLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/movies')
+    apiFetch('/api/movies')
       .then((res) => res.json())
       .then((data) => setMovies(Array.isArray(data) ? data : []))
       .catch(() => setMovies([]))
       .finally(() => setMoviesLoading(false))
 
-    fetch('/api/trending')
+    apiFetch('/api/trending')
       .then((res) => res.json())
       .then((data) => setTrending(Array.isArray(data) ? data : []))
       .catch(() => setTrending([]))
       .finally(() => setTrendingLoading(false))
 
-    fetch('/api/tvshows')
+    apiFetch('/api/tvshows')
       .then((res) => res.json())
       .then((data) => setTVShows(Array.isArray(data) ? data : []))
       .catch(() => setTVShows([]))
